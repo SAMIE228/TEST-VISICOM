@@ -1,0 +1,59 @@
+<?php
+
+//La conexion a la base de données
+
+$servername="mysql-samie.alwaysdata.net";
+$username="samie";
+$password="Socrate228";
+$dbname="samie_viscom";
+
+try {
+    $conn = new PDO("mysql:host=$servername; dbname=$dbname", $username,$password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    //echo "la connexion a ete bien etablie"
+
+}
+catch (PDOException $e) {
+    echo "la connexion a echoué:" . $e->getMessage();
+}
+if (isset ($_POST['commande']))
+{
+    //test
+     
+    //test
+    $nom = $_POST['nom'];
+    $telephone = $_POST['telephone'];
+    $email = $_POST['email'];
+    $support = (int) $_POST['support'];
+    $longueur = $_POST['longueur'];
+    $largeur = $_POST['largeur'];
+    $copie = $_POST['copie'];
+    $adress = $_POST['adress'];
+    $fichier = $_POST['fichier'];
+    $livraison = $_POST['livraison'];
+
+    // calcule du solde
+    $solde = ($longueur*$largeur*$copie*$support)+ $livraison;
+
+    $sql = ("INSERT INTO `impression`(`nom`, `telephone`, `email`, `support`,`longueur`,`largeur`,`copie`,`adress`,`fichier`,`livraison`,`solde`) VALUES (:nom, :telephone, :email, :support, :longueur, :largeur, :copie, :adress, :fichier, :livraison, :solde)");
+    $stmt = $conn->prepare($sql);
+
+    $stmt->bindParam(':nom', $nom);
+    $stmt->bindParam(':telephone', $telephone);
+    $stmt->bindParam(':email', $email);
+    $stmt->bindParam(':support', $support);
+    $stmt->bindParam(':longueur', $longueur);
+    $stmt->bindParam(':largeur', $largeur);
+    $stmt->bindParam(':copie', $copie);
+    $stmt->bindParam(':adress', $adress);
+    $stmt->bindParam(':fichier', $fichier);
+    $stmt->bindParam(':livraison', $livraison);
+    $stmt->bindParam(':solde', $solde);
+    
+
+    $stmt->execute();
+    header('location:print.php');
+    //pour changer deux ou plus dans une seul fois clique sur ctrl +d
+}
+
+?>
